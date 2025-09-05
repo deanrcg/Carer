@@ -9,6 +9,7 @@ A Gradio-based web application that collects patient information and provides AI
 - **Treatment Tracking**: Treatment details and start dates
 - **AI Nursing Advice**: Expert guidance from an AI nurse with senior consultant knowledge
 - **Specific Question Support**: Ask targeted questions and get personalized advice
+- **Save/Load Patient Data**: Save patient information to files and load previously saved data
 - **Data Export**: JSON format output for easy integration
 - **User-Friendly Interface**: Clean, intuitive form design with real-time AI consultation
 
@@ -59,6 +60,10 @@ python app.py
 
 7. Type your question and click "Ask AI Nurse" for targeted guidance
 
+8. **Save Patient Data**: Enter a filename and click "💾 Save Patient Data" to store the current patient information
+
+9. **Load Patient Data**: Select a saved file from the dropdown and click "📂 Load Patient Data" to restore previously saved information
+
 ## Form Fields
 
 - **Gender**: Dropdown selection (Male, Female, Other, Prefer not to say)
@@ -107,6 +112,27 @@ The AI system intelligently considers treatment timing:
 - **Ongoing Treatment**: Offers current treatment phase guidance and monitoring
 
 The AI automatically calculates days since operation and treatment status to provide contextually appropriate advice for each phase of the patient's journey.
+
+## Save/Load Functionality
+
+The system includes comprehensive data persistence features:
+
+### Saving Patient Data
+- **File Format**: JSON files stored in `saved_data/` directory
+- **Automatic Naming**: Adds `.json` extension if not provided
+- **Complete Records**: Saves all patient information including timestamps
+- **Error Handling**: Validates data before saving
+
+### Loading Patient Data
+- **File Browser**: Dropdown shows all saved patient files
+- **Automatic Population**: Loads all form fields with saved data
+- **Status Feedback**: Shows success/error messages
+- **Data Validation**: Checks file existence and format
+
+### File Management
+- **Organized Storage**: All files stored in dedicated `saved_data/` folder
+- **Easy Access**: Simple dropdown interface for file selection
+- **Backup Ready**: JSON format allows easy backup and sharing
 
 ## Requirements
 

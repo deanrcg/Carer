@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-09-05T10:20:23.022774",
+  "gender": "Female",
+  "age": 65,
+  "diagnosis": "Hip replacement surgery",
+  "operation": {
+    "description": "Total hip arthroplasty (right hip) due to severe osteoarthritis",
+    "date": "2024-01-10"
+  },
+  "treatment": {
+    "details": "Physical therapy 3x weekly, pain management with prescribed medications, wound care monitoring",
+    "start_date": "2024-01-12"
+  }
+}

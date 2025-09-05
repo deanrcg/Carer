@@ -4,6 +4,7 @@ import json
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
+import glob
 
 # Load environment variables
 load_dotenv()
@@ -183,6 +184,94 @@ Be empathetic, specific, and practical. Focus on what the carer can do right now
     except Exception as e:
         return f"❌ Error getting specific advice: {str(e)}\n\nPlease check your OpenAI API key and internet connection."
 
+def save_patient_data(gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date, filename):
+    """
+    Save patient data to a JSON file
+    """
+    try:
+        if not filename:
+            return "Please enter a filename to save the patient data.", None
+        
+        # Create patient record
+        patient_record = {
+            "timestamp": datetime.now().isoformat(),
+            "gender": gender,
+            "age": int(age) if age else None,
+            "diagnosis": diagnosis,
+            "operation": {
+                "description": operation_description,
+                "date": operation_date
+            },
+            "treatment": {
+                "details": treatment_details,
+                "start_date": treatment_start_date
+            }
+        }
+        
+        # Ensure saved_data directory exists
+        os.makedirs("saved_data", exist_ok=True)
+        
+        # Add .json extension if not present
+        if not filename.endswith('.json'):
+            filename += '.json'
+        
+        filepath = os.path.join("saved_data", filename)
+        
+        # Save to file
+        with open(filepath, 'w', encoding='utf-8') as f:
+            json.dump(patient_record, f, indent=2, ensure_ascii=False)
+        
+        return f"✅ Patient data saved successfully to {filename}", None
+        
+    except Exception as e:
+        return f"❌ Error saving patient data: {str(e)}", None
+
+def load_patient_data(filename):
+    """
+    Load patient data from a JSON file
+    """
+    try:
+        if not filename:
+            return "Please select a file to load.", None, None, None, None, None, None
+        
+        # Ensure saved_data directory exists
+        os.makedirs("saved_data", exist_ok=True)
+        
+        filepath = os.path.join("saved_data", filename)
+        
+        if not os.path.exists(filepath):
+            return f"❌ File {filename} not found.", None, None, None, None, None, None
+        
+        # Load from file
+        with open(filepath, 'r', encoding='utf-8') as f:
+            patient_record = json.load(f)
+        
+        # Extract data
+        gender = patient_record.get("gender", "")
+        age = patient_record.get("age", "")
+        diagnosis = patient_record.get("diagnosis", "")
+        operation_description = patient_record.get("operation", {}).get("description", "")
+        operation_date = patient_record.get("operation", {}).get("date", "")
+        treatment_details = patient_record.get("treatment", {}).get("details", "")
+        treatment_start_date = patient_record.get("treatment", {}).get("start_date", "")
+        
+        return f"✅ Patient data loaded successfully from {filename}", gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date
+        
+    except Exception as e:
+        return f"❌ Error loading patient data: {str(e)}", None, None, None, None, None, None
+
+def get_saved_files():
+    """
+    Get list of saved patient files
+    """
+    try:
+        os.makedirs("saved_data", exist_ok=True)
+        files = glob.glob("saved_data/*.json")
+        filenames = [os.path.basename(f) for f in files]
+        return filenames if filenames else ["No saved files found"]
+    except Exception as e:
+        return [f"Error: {str(e)}"]
+
 def clear_form():
     """Clear all form fields"""
     return None, None, None, None, None, None, None, "", "", ""
@@ -248,6 +337,35 @@ with gr.Blocks(title="AI-Powered Patient Care System", theme=gr.themes.Soft()) a
             with gr.Row():
                 submit_btn = gr.Button("Submit & Get AI Advice", variant="primary", size="lg")
                 clear_btn = gr.Button("Clear Form", variant="secondary")
+            
+            # Save/Load Section
+            gr.Markdown("## 💾 Save & Load Patient Data")
+            
+            with gr.Row():
+                with gr.Column(scale=2):
+                    save_filename = gr.Textbox(
+                        label="Save As",
+                        info="Enter filename to save patient data",
+                        placeholder="patient_john_doe",
+                        lines=1
+                    )
+                    save_btn = gr.Button("💾 Save Patient Data", variant="secondary")
+                
+                with gr.Column(scale=2):
+                    load_file_dropdown = gr.Dropdown(
+                        choices=get_saved_files(),
+                        label="Load Patient Data",
+                        info="Select a saved patient file to load",
+                        value=None
+                    )
+                    load_btn = gr.Button("📂 Load Patient Data", variant="secondary")
+            
+            save_load_status = gr.Textbox(
+                label="Save/Load Status",
+                interactive=False,
+                lines=2,
+                placeholder="Save/load status will appear here..."
+            )
         
         with gr.Column(scale=1):
             gr.Markdown("## 🤖 AI Nursing Advice")
@@ -306,6 +424,18 @@ with gr.Blocks(title="AI-Powered Patient Care System", theme=gr.themes.Soft()) a
         fn=get_specific_advice,
         inputs=[gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date, specific_question],
         outputs=[specific_advice_output]
+    )
+    
+    save_btn.click(
+        fn=save_patient_data,
+        inputs=[gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date, save_filename],
+        outputs=[save_load_status]
+    )
+    
+    load_btn.click(
+        fn=load_patient_data,
+        inputs=[load_file_dropdown],
+        outputs=[save_load_status, gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date]
     )
     
     clear_btn.click(
