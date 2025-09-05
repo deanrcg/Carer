@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-09-05T10:45:49.403398",
+  "gender": "Female",
+  "age": 54,
+  "diagnosis": "Breast cancer - grade 2 hormonal",
+  "operation": {
+    "description": "removed 21mm tumor from left breast, plus 16 lymph nodes from left arm",
+    "date": "2025-07-05"
+  },
+  "treatment": {
+    "details": "Awaiting details but expecting chemo followed by radiotherapy and hormone blocker",
+    "start_date": "2025-10-01"
+  }
+}

@@ -494,10 +494,10 @@ def save_patient_data(gender, age, diagnosis, operation_description, operation_d
         with open(filepath, 'w', encoding='utf-8') as f:
             json.dump(patient_record, f, indent=2, ensure_ascii=False)
         
-        return f"✅ Patient data saved successfully to {filename}", None
+        return f"✅ Patient data saved successfully to {filename}", get_saved_files()
         
     except Exception as e:
-        return f"❌ Error saving patient data: {str(e)}", None
+        return f"❌ Error saving patient data: {str(e)}", get_saved_files()
 
 def load_patient_data(filename):
     """
@@ -764,7 +764,7 @@ with gr.Blocks(title="AI-Powered Patient Care System", theme=gr.themes.Soft()) a
     save_btn.click(
         fn=save_patient_data,
         inputs=[gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date, save_filename],
-        outputs=[save_load_status]
+        outputs=[save_load_status, load_file_dropdown]
     )
     
     load_btn.click(

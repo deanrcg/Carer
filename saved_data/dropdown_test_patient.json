@@ -1,0 +1,14 @@
+{
+  "timestamp": "2025-09-05T10:58:01.262998",
+  "gender": "Male",
+  "age": 45,
+  "diagnosis": "Test diagnosis for dropdown fix",
+  "operation": {
+    "description": "Test operation",
+    "date": "2024-01-01"
+  },
+  "treatment": {
+    "details": "Test treatment",
+    "start_date": "2024-01-02"
+  }
+}
