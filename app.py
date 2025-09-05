@@ -119,6 +119,279 @@ def collect_patient_info(gender, age, diagnosis, operation_description, operatio
     
     return success_msg, json_output, ai_advice
 
+def get_patient_focused_advice(gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date):
+    """
+    Get AI-powered advice focused on the patient's perspective
+    """
+    try:
+        # Calculate days since operation and treatment start
+        op_date = datetime.strptime(operation_date, "%Y-%m-%d").date()
+        treat_date = datetime.strptime(treatment_start_date, "%Y-%m-%d").date()
+        today = date.today()
+        
+        days_since_op = (today - op_date).days
+        
+        # Determine treatment status
+        if treat_date > today:
+            days_until_treatment = (treat_date - today).days
+            treatment_status = f"Treatment starts in {days_until_treatment} days (future)"
+        elif treat_date == today:
+            treatment_status = "Treatment starts today"
+        else:
+            days_since_treatment = (today - treat_date).days
+            treatment_status = f"Treatment started {days_since_treatment} days ago (ongoing)"
+        
+        # Create patient-focused prompt
+        prompt = f"""
+You are an experienced senior nurse speaking directly to a patient. Based on the following patient information, provide encouraging, empowering advice that helps the patient understand their situation and take an active role in their recovery.
+
+PATIENT INFORMATION:
+- Gender: {gender}
+- Age: {age} years
+- Primary Diagnosis: {diagnosis}
+- Operation: {operation_description}
+- Operation Date: {operation_date} ({days_since_op} days ago)
+- Treatment Details: {treatment_details}
+- Treatment Start Date: {treatment_start_date} - {treatment_status}
+
+Please provide advice in the following structure:
+
+1. **YOUR RECOVERY JOURNEY**: Explain where you are in your recovery process and what this means
+
+2. **WHAT YOU CAN EXPECT**: What to expect during this stage of your recovery
+
+3. **HOW YOU CAN HELP YOURSELF**: Specific things you can do to support your own healing:
+   - Daily activities that promote recovery
+   - Self-care practices
+   - Things to monitor about your own condition
+   - Activities that are safe for you
+
+4. **RECOVERY TIMELINE**: What milestones you can look forward to
+
+5. **EMOTIONAL WELLBEING**: How to stay positive and manage any concerns
+
+6. **WHEN TO SEEK HELP**: Signs that indicate you should contact your healthcare team
+
+Please be encouraging, empowering, and speak directly to the patient using "you" language. Focus on what they can control and do for themselves.
+"""
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are an experienced senior nurse speaking directly to patients. Provide encouraging, empowering advice that helps patients take an active role in their recovery. Use 'you' language and be supportive."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=1500,
+            temperature=0.7
+        )
+        
+        return response.choices[0].message.content
+        
+    except Exception as e:
+        return f"❌ Error getting patient advice: {str(e)}\n\nPlease check your OpenAI API key and internet connection."
+
+def get_carer_focused_advice(gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date):
+    """
+    Get AI-powered advice focused on the carer's perspective
+    """
+    try:
+        # Calculate days since operation and treatment start
+        op_date = datetime.strptime(operation_date, "%Y-%m-%d").date()
+        treat_date = datetime.strptime(treatment_start_date, "%Y-%m-%d").date()
+        today = date.today()
+        
+        days_since_op = (today - op_date).days
+        
+        # Determine treatment status
+        if treat_date > today:
+            days_until_treatment = (treat_date - today).days
+            treatment_status = f"Treatment starts in {days_until_treatment} days (future)"
+        elif treat_date == today:
+            treatment_status = "Treatment starts today"
+        else:
+            days_since_treatment = (today - treat_date).days
+            treatment_status = f"Treatment started {days_since_treatment} days ago (ongoing)"
+        
+        # Create carer-focused prompt
+        prompt = f"""
+You are an experienced senior nurse providing guidance to a carer. Based on the following patient information, provide comprehensive caregiving advice that helps the carer provide the best possible support.
+
+PATIENT INFORMATION:
+- Gender: {gender}
+- Age: {age} years
+- Primary Diagnosis: {diagnosis}
+- Operation: {operation_description}
+- Operation Date: {operation_date} ({days_since_op} days ago)
+- Treatment Details: {treatment_details}
+- Treatment Start Date: {treatment_start_date} - {treatment_status}
+
+Please provide advice in the following structure:
+
+1. **CARE STAGE ASSESSMENT**: What stage of care you're providing and what this means
+
+2. **YOUR CAREGIVING ROLE**: What you should expect as a carer during this stage
+
+3. **DAILY CARE ACTIVITIES**: Specific ways you can help the patient, including:
+   - Daily care tasks
+   - Monitoring responsibilities
+   - Comfort measures
+   - Medication management (if applicable)
+   - Mobility and activity support
+
+4. **WARNING SIGNS TO WATCH**: Red flags or symptoms that require immediate medical attention
+
+5. **CAREGIVER SELF-CARE**: How to take care of yourself while caring for the patient
+
+6. **EMOTIONAL SUPPORT**: How to provide psychological support to the patient
+
+Please be specific, practical, and empathetic. Focus on actionable guidance that a carer can implement immediately.
+"""
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are an experienced senior nurse providing guidance to carers. Provide practical, evidence-based caregiving advice. Be empathetic and specific in your guidance."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=1500,
+            temperature=0.7
+        )
+        
+        return response.choices[0].message.content
+        
+    except Exception as e:
+        return f"❌ Error getting carer advice: {str(e)}\n\nPlease check your OpenAI API key and internet connection."
+
+def get_patient_question_answer(gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date, patient_question):
+    """
+    Get AI-powered answer to patient's specific question
+    """
+    try:
+        # Calculate days since operation and treatment start
+        op_date = datetime.strptime(operation_date, "%Y-%m-%d").date()
+        treat_date = datetime.strptime(treatment_start_date, "%Y-%m-%d").date()
+        today = date.today()
+        
+        days_since_op = (today - op_date).days
+        
+        # Determine treatment status
+        if treat_date > today:
+            days_until_treatment = (treat_date - today).days
+            treatment_status = f"Treatment starts in {days_until_treatment} days (future)"
+        elif treat_date == today:
+            treatment_status = "Treatment starts today"
+        else:
+            days_since_treatment = (today - treat_date).days
+            treatment_status = f"Treatment started {days_since_treatment} days ago (ongoing)"
+        
+        # Create patient question prompt
+        prompt = f"""
+You are an experienced senior nurse speaking directly to a patient. A patient is asking you a specific question about their care and recovery. Please provide a helpful, encouraging answer.
+
+PATIENT INFORMATION:
+- Gender: {gender}
+- Age: {age} years
+- Primary Diagnosis: {diagnosis}
+- Operation: {operation_description}
+- Operation Date: {operation_date} ({days_since_op} days ago)
+- Treatment Details: {treatment_details}
+- Treatment Start Date: {treatment_start_date} - {treatment_status}
+
+PATIENT'S QUESTION:
+"{patient_question}"
+
+Please provide:
+1. **DIRECT ANSWER**: Address the specific question with practical guidance
+2. **STEP-BY-STEP INSTRUCTIONS**: Clear, actionable steps the patient can follow
+3. **IMPORTANT CONSIDERATIONS**: Things to be aware of or monitor
+4. **WHEN TO SEEK HELP**: Signs that indicate the need for medical attention
+5. **ENCOURAGEMENT**: Positive reinforcement and reassurance
+
+IMPORTANT: Consider whether treatment has started yet when providing your advice. Tailor your response to the current phase (pre-treatment, starting treatment, or ongoing treatment).
+
+Be empathetic, encouraging, and speak directly to the patient using "you" language. Focus on what they can do to help themselves.
+"""
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are an experienced senior nurse speaking directly to patients. Provide encouraging, practical answers to patient questions. Use 'you' language and be supportive."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=1200,
+            temperature=0.7
+        )
+        
+        return response.choices[0].message.content
+        
+    except Exception as e:
+        return f"❌ Error getting patient answer: {str(e)}\n\nPlease check your OpenAI API key and internet connection."
+
+def get_carer_question_answer(gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date, carer_question):
+    """
+    Get AI-powered answer to carer's specific question
+    """
+    try:
+        # Calculate days since operation and treatment start
+        op_date = datetime.strptime(operation_date, "%Y-%m-%d").date()
+        treat_date = datetime.strptime(treatment_start_date, "%Y-%m-%d").date()
+        today = date.today()
+        
+        days_since_op = (today - op_date).days
+        
+        # Determine treatment status
+        if treat_date > today:
+            days_until_treatment = (treat_date - today).days
+            treatment_status = f"Treatment starts in {days_until_treatment} days (future)"
+        elif treat_date == today:
+            treatment_status = "Treatment starts today"
+        else:
+            days_since_treatment = (today - treat_date).days
+            treatment_status = f"Treatment started {days_since_treatment} days ago (ongoing)"
+        
+        # Create carer question prompt
+        prompt = f"""
+You are an experienced senior nurse providing guidance to a carer. A carer is asking you a specific question about providing care. Please provide detailed, practical guidance.
+
+PATIENT INFORMATION:
+- Gender: {gender}
+- Age: {age} years
+- Primary Diagnosis: {diagnosis}
+- Operation: {operation_description}
+- Operation Date: {operation_date} ({days_since_op} days ago)
+- Treatment Details: {treatment_details}
+- Treatment Start Date: {treatment_start_date} - {treatment_status}
+
+CARER'S QUESTION:
+"{carer_question}"
+
+Please provide:
+1. **DIRECT ANSWER**: Address the specific question with practical guidance
+2. **STEP-BY-STEP INSTRUCTIONS**: Clear, actionable steps the carer can follow
+3. **IMPORTANT CONSIDERATIONS**: Things to be aware of or monitor
+4. **WHEN TO SEEK HELP**: Signs that indicate the need for medical attention
+5. **ADDITIONAL TIPS**: Extra helpful information related to the question
+
+IMPORTANT: Consider whether treatment has started yet when providing your advice. Tailor your response to the current phase (pre-treatment, starting treatment, or ongoing treatment).
+
+Be empathetic, specific, and practical. Focus on what the carer can do right now to help their patient.
+"""
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You are an experienced senior nurse providing guidance to carers. Provide practical, evidence-based caregiving advice. Be empathetic and specific in your guidance."},
+                {"role": "user", "content": prompt}
+            ],
+            max_tokens=1200,
+            temperature=0.7
+        )
+        
+        return response.choices[0].message.content
+        
+    except Exception as e:
+        return f"❌ Error getting carer answer: {str(e)}\n\nPlease check your OpenAI API key and internet connection."
+
 def get_specific_advice(gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date, specific_question):
     """
     Get AI-powered specific advice based on carer's question
@@ -274,158 +547,220 @@ def get_saved_files():
 
 def clear_form():
     """Clear all form fields"""
-    return None, None, None, None, None, None, None, "", "", ""
+    return None, None, None, None, None, None, None, "", "", "", "", ""
 
 # Create the Gradio interface
 with gr.Blocks(title="AI-Powered Patient Care System", theme=gr.themes.Soft()) as app:
     gr.Markdown("# 🏥 AI-Powered Patient Care System")
-    gr.Markdown("Collect patient information and receive expert nursing advice powered by AI")
+    gr.Markdown("Comprehensive patient care management with AI-powered nursing advice")
     
-    # Patient Information Section
-    with gr.Row():
-        with gr.Column(scale=1):
-            gr.Markdown("## 📋 Patient Information")
-            
-            gender = gr.Dropdown(
-                choices=["Male", "Female", "Other", "Prefer not to say"],
-                label="Gender",
-                info="Select patient's gender"
-            )
-            
-            age = gr.Number(
-                label="Age",
-                info="Patient's age in years",
-                minimum=0,
-                maximum=150,
-                step=1
-            )
-            
-            diagnosis = gr.Textbox(
-                label="Diagnosis",
-                info="Primary medical diagnosis",
-                placeholder="Enter the main diagnosis..."
-            )
-            
-            operation_description = gr.Textbox(
-                label="Operation Description",
-                info="Description of the surgical procedure",
-                placeholder="Describe the operation performed...",
-                lines=3
-            )
-            
-            operation_date = gr.Textbox(
-                label="Operation Date",
-                info="Date when the operation was performed (YYYY-MM-DD)",
-                placeholder="2024-01-15",
-                value=date.today().strftime("%Y-%m-%d")
-            )
-            
-            treatment_details = gr.Textbox(
-                label="Treatment Details",
-                info="Details about ongoing treatment",
-                placeholder="Describe the treatment plan...",
-                lines=3
-            )
-            
-            treatment_start_date = gr.Textbox(
-                label="Treatment Start Date",
-                info="Date when treatment began (YYYY-MM-DD)",
-                placeholder="2024-01-15",
-                value=date.today().strftime("%Y-%m-%d")
-            )
+    # Create tabs
+    with gr.Tabs():
+        
+        # Tab 1: Patient Information & Save/Load
+        with gr.Tab("📋 Patient Info & Save/Load"):
+            gr.Markdown("## Patient Information Collection")
+            gr.Markdown("Enter patient details and manage saved data")
             
             with gr.Row():
-                submit_btn = gr.Button("Submit & Get AI Advice", variant="primary", size="lg")
-                clear_btn = gr.Button("Clear Form", variant="secondary")
-            
-            # Save/Load Section
-            gr.Markdown("## 💾 Save & Load Patient Data")
-            
-            with gr.Row():
-                with gr.Column(scale=2):
-                    save_filename = gr.Textbox(
-                        label="Save As",
-                        info="Enter filename to save patient data",
-                        placeholder="patient_john_doe",
-                        lines=1
+                with gr.Column(scale=1):
+                    gender = gr.Dropdown(
+                        choices=["Male", "Female", "Other", "Prefer not to say"],
+                        label="Gender",
+                        info="Select patient's gender"
                     )
-                    save_btn = gr.Button("💾 Save Patient Data", variant="secondary")
+                    
+                    age = gr.Number(
+                        label="Age",
+                        info="Patient's age in years",
+                        minimum=0,
+                        maximum=150,
+                        step=1
+                    )
+                    
+                    diagnosis = gr.Textbox(
+                        label="Diagnosis",
+                        info="Primary medical diagnosis",
+                        placeholder="Enter the main diagnosis..."
+                    )
+                    
+                    operation_description = gr.Textbox(
+                        label="Operation Description",
+                        info="Description of the surgical procedure",
+                        placeholder="Describe the operation performed...",
+                        lines=3
+                    )
+                    
+                    operation_date = gr.Textbox(
+                        label="Operation Date",
+                        info="Date when the operation was performed (YYYY-MM-DD)",
+                        placeholder="2024-01-15",
+                        value=date.today().strftime("%Y-%m-%d")
+                    )
+                    
+                    treatment_details = gr.Textbox(
+                        label="Treatment Details",
+                        info="Details about ongoing treatment",
+                        placeholder="Describe the treatment plan...",
+                        lines=3
+                    )
+                    
+                    treatment_start_date = gr.Textbox(
+                        label="Treatment Start Date",
+                        info="Date when treatment began (YYYY-MM-DD)",
+                        placeholder="2024-01-15",
+                        value=date.today().strftime("%Y-%m-%d")
+                    )
                 
-                with gr.Column(scale=2):
-                    load_file_dropdown = gr.Dropdown(
-                        choices=get_saved_files(),
-                        label="Load Patient Data",
-                        info="Select a saved patient file to load",
-                        value=None
+                with gr.Column(scale=1):
+                    gr.Markdown("## 💾 Save & Load Patient Data")
+                    
+                    with gr.Row():
+                        with gr.Column(scale=2):
+                            save_filename = gr.Textbox(
+                                label="Save As",
+                                info="Enter filename to save patient data",
+                                placeholder="patient_john_doe",
+                                lines=1
+                            )
+                            save_btn = gr.Button("💾 Save Patient Data", variant="secondary")
+                        
+                        with gr.Column(scale=2):
+                            load_file_dropdown = gr.Dropdown(
+                                choices=get_saved_files(),
+                                label="Load Patient Data",
+                                info="Select a saved patient file to load",
+                                value=None
+                            )
+                            load_btn = gr.Button("📂 Load Patient Data", variant="secondary")
+                    
+                    save_load_status = gr.Textbox(
+                        label="Save/Load Status",
+                        interactive=False,
+                        lines=2,
+                        placeholder="Save/load status will appear here..."
                     )
-                    load_btn = gr.Button("📂 Load Patient Data", variant="secondary")
+                    
+                    gr.Markdown("## 📊 Patient Record")
+                    
+                    json_output = gr.JSON(
+                        label="Patient Record (JSON)"
+                    )
             
-            save_load_status = gr.Textbox(
-                label="Save/Load Status",
-                interactive=False,
-                lines=2,
-                placeholder="Save/load status will appear here..."
-            )
+            with gr.Row():
+                submit_btn = gr.Button("Submit Patient Info", variant="primary", size="lg")
+                clear_btn = gr.Button("Clear Form", variant="secondary")
         
-        with gr.Column(scale=1):
-            gr.Markdown("## 🤖 AI Nursing Advice")
+        # Tab 2: Patient Advice
+        with gr.Tab("👤 Patient Advice"):
+            gr.Markdown("## AI-Powered Patient Guidance")
+            gr.Markdown("Get personalized advice and answers for the patient")
             
-            output_message = gr.Textbox(
-                label="Status",
-                interactive=False,
-                lines=3
-            )
-            
-            ai_advice_output = gr.Textbox(
-                label="Expert Nursing Advice",
-                interactive=False,
-                lines=15,
-                placeholder="AI nursing advice will appear here after submitting patient information..."
-            )
-            
-            gr.Markdown("## 📊 Patient Record")
-            
-            json_output = gr.JSON(
-                label="Patient Record (JSON)"
-            )
-    
-    # Specific Advice Section
-    gr.Markdown("---")
-    gr.Markdown("## 💬 Ask Specific Questions")
-    gr.Markdown("Have a specific question about your patient's care? Ask our AI nurse for personalized advice!")
-    
-    with gr.Row():
-        with gr.Column(scale=2):
-            specific_question = gr.Textbox(
-                label="Your Question",
-                info="Ask any specific question about your patient's care, recovery, or what you should do",
-                placeholder="e.g., 'How can I help with pain management?', 'What exercises are safe?', 'When should I be concerned about swelling?'",
-                lines=3
-            )
-            
-            ask_btn = gr.Button("Ask AI Nurse", variant="primary", size="lg")
+            with gr.Row():
+                with gr.Column(scale=1):
+                    gr.Markdown("### 🤖 General Patient Advice")
+                    
+                    patient_advice_output = gr.Textbox(
+                        label="Patient-Focused Nursing Advice",
+                        interactive=False,
+                        lines=20,
+                        placeholder="Patient-focused advice will appear here after submitting patient information..."
+                    )
+                    
+                    get_patient_advice_btn = gr.Button("Get Patient Advice", variant="primary", size="lg")
+                
+                with gr.Column(scale=1):
+                    gr.Markdown("### 💬 Patient Questions")
+                    gr.Markdown("Ask questions from the patient's perspective")
+                    
+                    patient_question = gr.Textbox(
+                        label="Patient's Question",
+                        info="Ask questions about recovery, what to expect, or concerns",
+                        placeholder="e.g., 'How long will my recovery take?', 'What can I do to help myself heal?', 'When can I return to normal activities?'",
+                        lines=3
+                    )
+                    
+                    ask_patient_question_btn = gr.Button("Ask AI Nurse (Patient View)", variant="primary", size="lg")
+                    
+                    patient_question_output = gr.Textbox(
+                        label="AI Nurse's Answer (Patient-Focused)",
+                        interactive=False,
+                        lines=15,
+                        placeholder="Patient-focused answers will appear here..."
+                    )
         
-        with gr.Column(scale=3):
-            specific_advice_output = gr.Textbox(
-                label="AI Nurse's Specific Advice",
-                interactive=False,
-                lines=15,
-                placeholder="Your specific advice will appear here after asking a question..."
-            )
+        # Tab 3: Carer Advice
+        with gr.Tab("👥 Carer Advice"):
+            gr.Markdown("## AI-Powered Carer Guidance")
+            gr.Markdown("Get expert advice and answers for carers")
+            
+            with gr.Row():
+                with gr.Column(scale=1):
+                    gr.Markdown("### 🤖 General Carer Advice")
+                    
+                    carer_advice_output = gr.Textbox(
+                        label="Carer-Focused Nursing Advice",
+                        interactive=False,
+                        lines=20,
+                        placeholder="Carer-focused advice will appear here after submitting patient information..."
+                    )
+                    
+                    get_carer_advice_btn = gr.Button("Get Carer Advice", variant="primary", size="lg")
+                
+                with gr.Column(scale=1):
+                    gr.Markdown("### 💬 Carer Questions")
+                    gr.Markdown("Ask questions from the carer's perspective")
+                    
+                    carer_question = gr.Textbox(
+                        label="Carer's Question",
+                        info="Ask questions about caregiving, monitoring, or support",
+                        placeholder="e.g., 'How can I help with pain management?', 'What signs should I watch for?', 'How can I provide emotional support?'",
+                        lines=3
+                    )
+                    
+                    ask_carer_question_btn = gr.Button("Ask AI Nurse (Carer View)", variant="primary", size="lg")
+                    
+                    carer_question_output = gr.Textbox(
+                        label="AI Nurse's Answer (Carer-Focused)",
+                        interactive=False,
+                        lines=15,
+                        placeholder="Carer-focused answers will appear here..."
+                    )
     
     # Event handlers
     submit_btn.click(
         fn=collect_patient_info,
         inputs=[gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date],
-        outputs=[output_message, json_output, ai_advice_output]
+        outputs=[json_output]
     )
     
-    ask_btn.click(
-        fn=get_specific_advice,
-        inputs=[gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date, specific_question],
-        outputs=[specific_advice_output]
+    # Patient Advice Tab
+    get_patient_advice_btn.click(
+        fn=get_patient_focused_advice,
+        inputs=[gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date],
+        outputs=[patient_advice_output]
     )
     
+    ask_patient_question_btn.click(
+        fn=get_patient_question_answer,
+        inputs=[gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date, patient_question],
+        outputs=[patient_question_output]
+    )
+    
+    # Carer Advice Tab
+    get_carer_advice_btn.click(
+        fn=get_carer_focused_advice,
+        inputs=[gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date],
+        outputs=[carer_advice_output]
+    )
+    
+    ask_carer_question_btn.click(
+        fn=get_carer_question_answer,
+        inputs=[gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date, carer_question],
+        outputs=[carer_question_output]
+    )
+    
+    # Save/Load functionality
     save_btn.click(
         fn=save_patient_data,
         inputs=[gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date, save_filename],
@@ -440,7 +775,7 @@ with gr.Blocks(title="AI-Powered Patient Care System", theme=gr.themes.Soft()) a
     
     clear_btn.click(
         fn=clear_form,
-        outputs=[gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date, output_message, ai_advice_output, specific_advice_output]
+        outputs=[gender, age, diagnosis, operation_description, operation_date, treatment_details, treatment_start_date, save_load_status, patient_advice_output, patient_question_output, carer_advice_output, carer_question_output]
     )
 
 if __name__ == "__main__":

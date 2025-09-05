@@ -1,17 +1,18 @@
 # AI-Powered Patient Care System
 
-A Gradio-based web application that collects patient information and provides AI-powered nursing advice from an experienced senior nurse perspective.
+A comprehensive Gradio-based web application with a clean tabbed interface that provides AI-powered nursing advice tailored for both patients and carers.
 
 ## Features
 
+- **Clean Tabbed Interface**: Organized into 3 logical sections for better user experience
 - **Patient Demographics**: Gender and age collection
 - **Medical Information**: Diagnosis and operation details
-- **Treatment Tracking**: Treatment details and start dates
-- **AI Nursing Advice**: Expert guidance from an AI nurse with senior consultant knowledge
-- **Specific Question Support**: Ask targeted questions and get personalized advice
-- **Save/Load Patient Data**: Save patient information to files and load previously saved data
+- **Treatment Tracking**: Treatment details and start dates with timeline awareness
+- **Dual-Perspective AI Advice**: Separate guidance for patients and carers
+- **Specialized Q&A**: Patient-focused and carer-focused question answering
+- **Save/Load Patient Data**: Persistent data management with JSON files
 - **Data Export**: JSON format output for easy integration
-- **User-Friendly Interface**: Clean, intuitive form design with real-time AI consultation
+- **User-Friendly Interface**: Clean, intuitive design with real-time AI consultation
 
 ## AI Nursing Advisor
 
@@ -36,6 +37,27 @@ pip install -r requirements.txt
    - Add your OpenAI API key: `OPENAI_API_KEY=your_actual_api_key_here`
    - Get your API key from: https://platform.openai.com/api-keys
 
+## Tabbed Interface
+
+The application is organized into three clean, focused tabs:
+
+### 📋 Tab 1: Patient Info & Save/Load
+- **Patient Information Collection**: Enter demographics, diagnosis, operation details
+- **Save/Load Functionality**: Persistent data management with JSON files
+- **Patient Record Display**: Structured JSON output for easy reference
+
+### 👤 Tab 2: Patient Advice
+- **Patient-Focused Guidance**: AI advice tailored for the patient's perspective
+- **Patient Q&A**: Ask questions from the patient's viewpoint
+- **Encouraging Language**: Uses "you" language and empowering tone
+- **Self-Care Focus**: Emphasizes what patients can do for themselves
+
+### 👥 Tab 3: Carer Advice
+- **Carer-Focused Guidance**: AI advice tailored for caregivers
+- **Carer Q&A**: Ask questions from the carer's perspective
+- **Practical Instructions**: Step-by-step caregiving guidance
+- **Monitoring Focus**: Emphasizes what carers should watch for
+
 ## Usage
 
 1. Run the application:
@@ -45,24 +67,21 @@ python app.py
 
 2. Open your web browser and navigate to `http://localhost:7860`
 
-3. Fill in the patient information form with:
-   - Gender selection
-   - Age (numeric input)
-   - Diagnosis (text)
-   - Operation description and date
-   - Treatment details and start date
+3. **Tab 1 - Patient Info & Save/Load**: Fill in patient information and manage saved data
+   - Enter patient demographics and medical details
+   - Save patient data to files for future reference
+   - Load previously saved patient information
+   - View structured JSON patient record
 
-4. Click "Submit & Get AI Advice" to process the data and receive expert nursing guidance
+4. **Tab 2 - Patient Advice**: Get advice tailored for the patient
+   - Click "Get Patient Advice" for comprehensive patient-focused guidance
+   - Ask specific questions from the patient's perspective
+   - Receive encouraging, empowering advice using "you" language
 
-5. View the AI-generated nursing advice and structured JSON record
-
-6. **Ask Specific Questions**: Use the "Ask Specific Questions" section to get personalized advice on any aspect of patient care
-
-7. Type your question and click "Ask AI Nurse" for targeted guidance
-
-8. **Save Patient Data**: Enter a filename and click "💾 Save Patient Data" to store the current patient information
-
-9. **Load Patient Data**: Select a saved file from the dropdown and click "📂 Load Patient Data" to restore previously saved information
+5. **Tab 3 - Carer Advice**: Get advice tailored for carers
+   - Click "Get Carer Advice" for comprehensive caregiving guidance
+   - Ask specific questions from the carer's perspective
+   - Receive practical, actionable caregiving instructions
 
 ## Form Fields
 
